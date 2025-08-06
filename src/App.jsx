@@ -1,16 +1,24 @@
-import reactLogo from './assets/react.svg'
-import './App.css'
+import {fetchUserAttributes, signOut, getCurrentUser} from 'aws-amplify/auth';
+import {useState} from "react";
+import {Placeholder} from "@aws-amplify/ui-react";
+import '@aws-amplify/ui-react/styles.css';
 
-function App() {
+export default function App() {
 
-  return (
-    <div className="App">
-        <header className="App-header">
-            <img src={reactLogo} className="logo react" alt="logo" />
-            <h1>Hello from amplify</h1>
-        </header>
-    </div>
-  )
+    const [userName, setUserName] = useState("");
+
+    async function handleSignOut() {
+        await signOut();
+    }
+
+    fetchUserAttributes().then(user => {
+        setUserName(user.preferred_username);
+    });
+
+    return (
+        <>
+            <h1>{userName || <Placeholder size={"large"}/>}</h1>
+            <button onClick={handleSignOut}>Sign out</button>
+        </>
+    );
 }
-
-export default App
